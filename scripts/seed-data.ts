@@ -88,7 +88,7 @@ async function seed() {
 
   // Insert clients
   console.log('👥 Inserting clients...');
-  const { data: clientData, error: clientError } = await supabase
+  const { data: clientData, error: clientError } = await (supabase as any)
     .from('clients')
     .insert(clients)
     .select();
@@ -106,7 +106,7 @@ async function seed() {
     client_id: clientData[site.clientIndex].id,
   }));
 
-  const { data: siteData, error: siteError } = await supabase
+  const { data: siteData, error: siteError } = await (supabase as any)
     .from('sites')
     .insert(sitesWithClientIds)
     .select();
@@ -125,7 +125,7 @@ async function seed() {
     status: 'active',
   }));
 
-  const { data: employeeData, error: employeeError } = await supabase
+  const { data: employeeData, error: employeeError } = await (supabase as any)
     .from('employees')
     .insert(employeesData)
     .select();
@@ -171,7 +171,7 @@ async function seed() {
     }
   }
 
-  const { error: certError } = await supabase
+  const { error: certError } = await (supabase as any)
     .from('certifications')
     .insert(certifications);
 
@@ -218,7 +218,7 @@ async function seed() {
 
   // Employee at index 9 is unassigned (no assignment created)
 
-  const { error: assignmentError } = await supabase
+  const { error: assignmentError } = await (supabase as any)
     .from('assignments')
     .insert(assignments);
 
@@ -250,7 +250,7 @@ async function seed() {
     }
   }
 
-  const { error: docError } = await supabase
+  const { error: docError } = await (supabase as any)
     .from('documents')
     .insert(documents);
 

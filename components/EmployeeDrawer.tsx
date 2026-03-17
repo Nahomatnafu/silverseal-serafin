@@ -1,6 +1,6 @@
 'use client';
 
-import { X, Mail, Phone, MapPin, Clock, FileText, AlertCircle } from 'lucide-react';
+import { X, Mail, Phone, MapPin, Clock, FileText, AlertCircle, Edit, Trash2, Plus } from 'lucide-react';
 import { formatDate, formatDateTime, getCertificationStatusColor, getCertificationStatus } from '@/lib/utils';
 
 interface Certification {
@@ -45,6 +45,11 @@ interface EmployeeDrawerProps {
   documents: Document[];
   currentAssignment: Assignment | null;
   onClose: () => void;
+  onEdit?: (employee: Employee) => void;
+  onDelete?: (employeeId: string) => void;
+  onAddCertification?: (employeeId: string) => void;
+  onEditCertification?: (certification: Certification) => void;
+  onDeleteCertification?: (certificationId: string) => void;
 }
 
 export default function EmployeeDrawer({
@@ -53,11 +58,28 @@ export default function EmployeeDrawer({
   documents,
   currentAssignment,
   onClose,
+  onEdit,
+  onDelete,
+  onAddCertification,
+  onEditCertification,
+  onDeleteCertification,
 }: EmployeeDrawerProps) {
   if (!employee) return null;
 
   const expiredCerts = certifications.filter(c => getCertificationStatus(c.expiry_date) === 'expired').length;
   const expiringSoonCerts = certifications.filter(c => getCertificationStatus(c.expiry_date) === 'expiring_soon').length;
+
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete ${employee.name}? This action cannot be undone.`)) {
+      onDelete?.(employee.id);
+    }
+  };
+
+  const handleDeleteCertification = (certId: string, certType: string) => {
+    if (window.confirm(`Are you sure you want to delete the ${certType} certification?`)) {
+      onDeleteCertification?.(certId);
+    }
+  };
 
   return (
     <div className="fixed inset-y-0 right-0 w-[500px] bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-50 animate-slide-in">
@@ -93,6 +115,30 @@ export default function EmployeeDrawer({
 
       {/* Content */}
       <div className="p-6 space-y-6">
+        {/* Action Buttons */}
+        {(onEdit || onDelete) && (
+          <section className="flex gap-3">
+            {onEdit && (
+              <button
+                onClick={() => onEdit(employee)}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Profile
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={handleDelete}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete Employee
+              </button>
+            )}
+          </section>
+        )}
+
         {/* Contact Information */}
         <section>
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Contact Information</h3>
@@ -148,20 +194,31 @@ export default function EmployeeDrawer({
         <section>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-900">Certifications</h3>
-            {(expiredCerts > 0 || expiringSoonCerts > 0) && (
-              <div className="flex items-center gap-2 text-xs">
-                {expiredCerts > 0 && (
-                  <span className="px-2 py-1 bg-red-100 text-red-700 rounded">
-                    {expiredCerts} expired
-                  </span>
-                )}
-                {expiringSoonCerts > 0 && (
-                  <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded">
-                    {expiringSoonCerts} expiring soon
-                  </span>
-                )}
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {(expiredCerts > 0 || expiringSoonCerts > 0) && (
+                <div className="flex items-center gap-2 text-xs">
+                  {expiredCerts > 0 && (
+                    <span className="px-2 py-1 bg-red-100 text-red-700 rounded">
+                      {expiredCerts} expired
+                    </span>
+                  )}
+                  {expiringSoonCerts > 0 && (
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded">
+                      {expiringSoonCerts} expiring soon
+                    </span>
+                  )}
+                </div>
+              )}
+              {onAddCertification && (
+                <button
+                  onClick={() => onAddCertification(employee.id)}
+                  className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                >
+                  <Plus className="w-3 h-3" />
+                  Add
+                </button>
+              )}
+            </div>
           </div>
           <div className="space-y-2">
             {certifications.map(cert => {
@@ -185,9 +242,33 @@ export default function EmployeeDrawer({
                         Expires: {formatDate(cert.expiry_date)}
                       </div>
                     </div>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${getCertificationStatusColor(status)}`}>
-                      {status.replace('_', ' ').toUpperCase()}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${getCertificationStatusColor(status)}`}>
+                        {status.replace('_', ' ').toUpperCase()}
+                      </span>
+                      {(onEditCertification || onDeleteCertification) && (
+                        <div className="flex gap-1">
+                          {onEditCertification && (
+                            <button
+                              onClick={() => onEditCertification(cert)}
+                              className="p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors"
+                              title="Edit certification"
+                            >
+                              <Edit className="w-3 h-3" />
+                            </button>
+                          )}
+                          {onDeleteCertification && (
+                            <button
+                              onClick={() => handleDeleteCertification(cert.id, cert.cert_type)}
+                              className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                              title="Delete certification"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

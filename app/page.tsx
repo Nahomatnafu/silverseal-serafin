@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Map, List, Shield } from 'lucide-react';
+import { Map, List, Shield, UserPlus } from 'lucide-react';
 import MapView from '@/components/MapView';
 import SitePanel from '@/components/SitePanel';
 import EmployeeDrawer from '@/components/EmployeeDrawer';
+import EmployeeFormModal from '@/components/EmployeeFormModal';
+import CertificationFormModal from '@/components/CertificationFormModal';
 import RosterView from '@/components/RosterView';
 import { supabase } from '@/lib/supabase';
 import { isShiftActive, isShiftUpcoming, getCertificationStatus } from '@/lib/utils';
@@ -15,6 +17,11 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+  const [employeeFormOpen, setEmployeeFormOpen] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState<any | null>(null);
+  const [certificationFormOpen, setCertificationFormOpen] = useState(false);
+  const [editingCertification, setEditingCertification] = useState<any | null>(null);
+  const [certificationEmployeeId, setCertificationEmployeeId] = useState<string>('');
 
   const [employees, setEmployees] = useState<any[]>([]);
   const [sites, setSites] = useState<any[]>([]);
@@ -57,6 +64,146 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleSaveEmployee(employee: any) {
+    try {
+      if (employee.id) {
+        // Update existing employee
+        const { error } = await (supabase as any)
+          .from('employees')
+          .update({
+            name: employee.name,
+            role: employee.role,
+            profile_photo_url: employee.profile_photo_url,
+            contact_email: employee.contact_email,
+            contact_phone: employee.contact_phone,
+            status: employee.status,
+            notes: employee.notes,
+          })
+          .eq('id', employee.id);
+
+        if (error) throw error;
+      } else {
+        // Insert new employee
+        const { error } = await (supabase as any)
+          .from('employees')
+          .insert({
+            name: employee.name,
+            role: employee.role,
+            profile_photo_url: employee.profile_photo_url,
+            contact_email: employee.contact_email,
+            contact_phone: employee.contact_phone,
+            status: employee.status,
+            notes: employee.notes,
+          });
+
+        if (error) throw error;
+      }
+
+      // Reload data
+      await loadData();
+      setEmployeeFormOpen(false);
+      setEditingEmployee(null);
+    } catch (error: any) {
+      console.error('Error saving employee:', error);
+      throw new Error(error.message || 'Failed to save employee');
+    }
+  }
+
+  async function handleDeleteEmployee(employeeId: string) {
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .delete()
+        .eq('id', employeeId);
+
+      if (error) throw error;
+
+      // Reload data and close drawer
+      await loadData();
+      setSelectedEmployeeId(null);
+    } catch (error: any) {
+      console.error('Error deleting employee:', error);
+      alert('Failed to delete employee: ' + error.message);
+    }
+  }
+
+  function handleEditEmployee(employee: any) {
+    setEditingEmployee(employee);
+    setEmployeeFormOpen(true);
+  }
+
+  function handleAddEmployee() {
+    setEditingEmployee(null);
+    setEmployeeFormOpen(true);
+  }
+
+  async function handleSaveCertification(certification: any) {
+    try {
+      if (certification.id) {
+        // Update existing certification
+        const { error } = await (supabase as any)
+          .from('certifications')
+          .update({
+            cert_type: certification.cert_type,
+            issued_date: certification.issued_date,
+            expiry_date: certification.expiry_date,
+          })
+          .eq('id', certification.id);
+
+        if (error) throw error;
+      } else {
+        // Insert new certification
+        const { error } = await (supabase as any)
+          .from('certifications')
+          .insert({
+            employee_id: certification.employee_id,
+            cert_type: certification.cert_type,
+            issued_date: certification.issued_date,
+            expiry_date: certification.expiry_date,
+          });
+
+        if (error) throw error;
+      }
+
+      // Reload data
+      await loadData();
+      setCertificationFormOpen(false);
+      setEditingCertification(null);
+    } catch (error: any) {
+      console.error('Error saving certification:', error);
+      throw new Error(error.message || 'Failed to save certification');
+    }
+  }
+
+  async function handleDeleteCertification(certificationId: string) {
+    try {
+      const { error } = await supabase
+        .from('certifications')
+        .delete()
+        .eq('id', certificationId);
+
+      if (error) throw error;
+
+      // Reload data
+      await loadData();
+    } catch (error: any) {
+      console.error('Error deleting certification:', error);
+      alert('Failed to delete certification: ' + error.message);
+    }
+  }
+
+  function handleAddCertification(employeeId: string) {
+    setCertificationEmployeeId(employeeId);
+    setEditingCertification(null);
+    setCertificationFormOpen(true);
+  }
+
+  function handleEditCertification(certification: any) {
+    setCertificationEmployeeId(certification.employee_id);
+    setEditingCertification(certification);
+    setCertificationFormOpen(true);
   }
 
   // Calculate site stats for map pins
@@ -113,6 +260,13 @@ export default function Home() {
             </div>
 
             <div className="flex gap-2">
+              <button
+                onClick={handleAddEmployee}
+                className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+              >
+                <UserPlus className="w-5 h-5" />
+                Add Employee
+              </button>
               <button
                 onClick={() => setViewMode('map')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
@@ -176,7 +330,37 @@ export default function Home() {
         documents={employeeDocuments}
         currentAssignment={currentAssignment || null}
         onClose={() => setSelectedEmployeeId(null)}
+        onEdit={handleEditEmployee}
+        onDelete={handleDeleteEmployee}
+        onAddCertification={handleAddCertification}
+        onEditCertification={handleEditCertification}
+        onDeleteCertification={handleDeleteCertification}
       />
+
+      {/* Employee Form Modal */}
+      {employeeFormOpen && (
+        <EmployeeFormModal
+          employee={editingEmployee}
+          onClose={() => {
+            setEmployeeFormOpen(false);
+            setEditingEmployee(null);
+          }}
+          onSave={handleSaveEmployee}
+        />
+      )}
+
+      {/* Certification Form Modal */}
+      {certificationFormOpen && (
+        <CertificationFormModal
+          certification={editingCertification}
+          employeeId={certificationEmployeeId}
+          onClose={() => {
+            setCertificationFormOpen(false);
+            setEditingCertification(null);
+          }}
+          onSave={handleSaveCertification}
+        />
+      )}
     </div>
   );
 }
