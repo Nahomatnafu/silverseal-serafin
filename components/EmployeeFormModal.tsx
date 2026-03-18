@@ -110,28 +110,28 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Employe
   const statuses = ['active', 'inactive', 'on_leave'];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-lg">
+        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-6 rounded-t-lg">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <User className="w-6 h-6" />
-              <h2 className="text-2xl font-bold">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <User className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
+              <h2 className="text-lg sm:text-2xl font-bold truncate">
                 {employee ? 'Edit Employee' : 'Add New Employee'}
               </h2>
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-200 transition-colors"
+              className="text-white hover:text-gray-200 transition-colors shrink-0 ml-2"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
               {error}

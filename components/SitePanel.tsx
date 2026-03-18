@@ -49,26 +49,26 @@ export default function SitePanel({ site, assignments, onClose, onEmployeeClick 
   });
 
   return (
-    <div className="absolute top-0 right-0 w-96 h-full bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-10">
+    <div className="absolute top-0 right-0 w-full sm:w-96 h-full bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-10">
       {/* Header */}
-      <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
+      <div className="sticky top-0 bg-white border-b border-gray-200 p-3 sm:p-4 z-10">
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900">{site.name}</h2>
-            <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
-              <MapPin className="w-4 h-4" />
-              <span>{site.address}</span>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{site.name}</h2>
+            <div className="flex items-center gap-2 mt-1 text-xs sm:text-sm text-gray-600">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+              <span className="truncate">{site.address}</span>
             </div>
             {site.client && (
-              <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
-                <Building2 className="w-4 h-4" />
-                <span>{site.client.name}</span>
+              <div className="flex items-center gap-2 mt-1 text-xs sm:text-sm text-gray-600">
+                <Building2 className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                <span className="truncate">{site.client.name}</span>
               </div>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1 hover:bg-gray-100 rounded-lg transition-colors shrink-0 ml-2"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>

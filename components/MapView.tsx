@@ -144,13 +144,13 @@ export default function MapView({ sites, siteStats, clients, onSiteClick }: MapV
       <div ref={mapContainer} className="w-full h-full" />
 
       {/* Filter Button */}
-      <div className="absolute top-6 right-6">
+      <div className="absolute top-3 right-3 sm:top-6 sm:right-6">
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="bg-white rounded-lg shadow-lg px-4 py-2 border border-gray-200 hover:shadow-xl transition-shadow flex items-center gap-2"
+          className="bg-white rounded-lg shadow-lg px-3 py-2 sm:px-4 border border-gray-200 hover:shadow-xl transition-shadow flex items-center gap-2"
         >
           <Filter className="w-4 h-4 text-gray-700" />
-          <span className="text-sm font-medium text-gray-900">Filters</span>
+          <span className="text-sm font-medium text-gray-900 hidden sm:inline">Filters</span>
           {activeFilterCount > 0 && (
             <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
               {activeFilterCount}
@@ -161,7 +161,7 @@ export default function MapView({ sites, siteStats, clients, onSiteClick }: MapV
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="absolute top-20 right-6 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-72 z-10">
+        <div className="absolute top-14 right-3 sm:top-20 sm:right-6 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-[calc(100vw-1.5rem)] max-w-xs sm:w-72 z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-gray-900">Filter Sites</h3>
             <button

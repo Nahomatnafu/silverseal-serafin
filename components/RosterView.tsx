@@ -236,8 +236,8 @@ export default function RosterView({
         </p>
       </div>
 
-      {/* Table */}
-      <div className="flex-1 overflow-auto">
+      {/* Desktop Table View */}
+      <div className="hidden md:block flex-1 overflow-auto">
         <table className="w-full">
           <thead className="bg-gray-100 sticky top-0">
             <tr>
@@ -336,6 +336,86 @@ export default function RosterView({
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden flex-1 overflow-auto p-3 space-y-3">
+        {filteredAndSortedEmployees.map(employee => {
+          const currentAssignment = assignments.find(
+            a => a.employee_id === employee.id && isShiftActive(a.start_time, a.end_time)
+          );
+          const upcomingAssignment = assignments.find(
+            a => a.employee_id === employee.id && isShiftUpcoming(a.start_time)
+          );
+          const assignment = currentAssignment || upcomingAssignment;
+          const employeeCerts = certifications.filter(c => c.employee_id === employee.id);
+          const expiredCount = employeeCerts.filter(c => getCertificationStatus(c.expiry_date) === 'expired').length;
+          const expiringSoonCount = employeeCerts.filter(c => getCertificationStatus(c.expiry_date) === 'expiring_soon').length;
+
+          return (
+            <div
+              key={employee.id}
+              onClick={() => onEmployeeClick(employee.id)}
+              className="bg-white rounded-lg border border-gray-200 p-3 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer"
+            >
+              <div className="flex items-start gap-3">
+                <img
+                  src={employee.profile_photo_url || 'https://i.pravatar.cc/150?img=1'}
+                  alt={employee.name}
+                  className="w-12 h-12 rounded-full object-cover shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-gray-900 truncate">{employee.name}</div>
+                  <div className="text-sm text-gray-600">{employee.role}</div>
+
+                  {assignment && (
+                    <div className="mt-2 space-y-1">
+                      <div className="text-sm font-medium text-gray-900 truncate">{assignment.site?.name}</div>
+                      <div className="text-xs text-gray-500 truncate">{assignment.site?.client?.name}</div>
+                      <div className="text-xs text-gray-600">
+                        {assignment.shift_label} • {formatDateTime(assignment.start_time).split(', ')[1]} - {formatDateTime(assignment.end_time).split(', ')[1]}
+                      </div>
+                      {currentAssignment && (
+                        <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">
+                          Active Now
+                        </span>
+                      )}
+                      {upcomingAssignment && !currentAssignment && (
+                        <span className="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
+                          Upcoming
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {!assignment && (
+                    <div className="mt-2 text-sm text-gray-400 italic">Unassigned</div>
+                  )}
+
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {expiredCount > 0 && (
+                      <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {expiredCount} expired
+                      </span>
+                    )}
+                    {expiringSoonCount > 0 && (
+                      <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {expiringSoonCount} expiring
+                      </span>
+                    )}
+                    {expiredCount === 0 && expiringSoonCount === 0 && (
+                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">
+                        All valid
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

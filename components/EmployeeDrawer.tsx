@@ -82,19 +82,19 @@ export default function EmployeeDrawer({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-[500px] bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-50 animate-slide-in">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[500px] bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-50 animate-slide-in">
       {/* Header */}
-      <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 z-10">
+      <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-6 z-10">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <img
               src={employee.profile_photo_url || 'https://i.pravatar.cc/150?img=1'}
               alt={employee.name}
-              className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-white shadow-lg shrink-0"
             />
-            <div>
-              <h2 className="text-2xl font-bold">{employee.name}</h2>
-              <p className="text-blue-100 mt-1">{employee.role}</p>
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold truncate">{employee.name}</h2>
+              <p className="text-blue-100 mt-1 text-sm sm:text-base truncate">{employee.role}</p>
               <div className="mt-2">
                 <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                   employee.status === 'active' ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
@@ -106,34 +106,36 @@ export default function EmployeeDrawer({
           </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-blue-800 rounded-lg transition-colors"
+            className="p-1 hover:bg-blue-800 rounded-lg transition-colors shrink-0 ml-2"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Action Buttons */}
         {(onEdit || onDelete) && (
-          <section className="flex gap-3">
+          <section className="flex gap-2 sm:gap-3">
             {onEdit && (
               <button
                 onClick={() => onEdit(employee)}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
               >
                 <Edit className="w-4 h-4" />
-                Edit Profile
+                <span className="hidden sm:inline">Edit Profile</span>
+                <span className="sm:hidden">Edit</span>
               </button>
             )}
             {onDelete && (
               <button
                 onClick={handleDelete}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
               >
                 <Trash2 className="w-4 h-4" />
-                Delete Employee
+                <span className="hidden sm:inline">Delete Employee</span>
+                <span className="sm:hidden">Delete</span>
               </button>
             )}
           </section>

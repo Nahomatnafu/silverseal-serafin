@@ -249,45 +249,48 @@ export default function Home() {
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Shield className="w-8 h-8" />
-              <div>
-                <h1 className="text-2xl font-bold">Silverseal Guard Management</h1>
-                <p className="text-blue-100 text-sm">Secure Force Operations</p>
+        <div className="px-3 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <Shield className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-2xl font-bold truncate">Silverseal Guard</h1>
+                <p className="text-blue-100 text-xs sm:text-sm hidden sm:block">Secure Force Operations</p>
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2 flex-shrink-0">
               <button
                 onClick={handleAddEmployee}
-                className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm sm:text-base"
               >
-                <UserPlus className="w-5 h-5" />
-                Add Employee
+                <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Add Employee</span>
+                <span className="sm:hidden">Add</span>
               </button>
               <button
                 onClick={() => setViewMode('map')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
                   viewMode === 'map'
                     ? 'bg-white text-blue-600 font-semibold'
                     : 'bg-blue-500 text-white hover:bg-blue-400'
                 }`}
               >
-                <Map className="w-5 h-5" />
-                Map View
+                <Map className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Map View</span>
+                <span className="sm:hidden">Map</span>
               </button>
               <button
                 onClick={() => setViewMode('roster')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
                   viewMode === 'roster'
                     ? 'bg-white text-blue-600 font-semibold'
                     : 'bg-blue-500 text-white hover:bg-blue-400'
                 }`}
               >
-                <List className="w-5 h-5" />
-                Roster View
+                <List className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Roster View</span>
+                <span className="sm:hidden">Roster</span>
               </button>
             </div>
           </div>
