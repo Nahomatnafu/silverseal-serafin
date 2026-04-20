@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, User, Mail, Phone, Camera, FileText, Upload } from 'lucide-react';
+import { X, User, Mail, Phone, Camera, FileText, Upload, Calendar } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface Employee {
@@ -13,6 +13,13 @@ interface Employee {
   contact_phone: string | null;
   status: string;
   notes: string | null;
+  rdo_monday?: boolean;
+  rdo_tuesday?: boolean;
+  rdo_wednesday?: boolean;
+  rdo_thursday?: boolean;
+  rdo_friday?: boolean;
+  rdo_saturday?: boolean;
+  rdo_sunday?: boolean;
 }
 
 interface EmployeeFormModalProps {
@@ -22,6 +29,7 @@ interface EmployeeFormModalProps {
 }
 
 export default function EmployeeFormModal({ employee, onClose, onSave }: EmployeeFormModalProps) {
+  const [activeTab, setActiveTab] = useState<'main' | 'certs' | 'counseling'>('main');
   const [formData, setFormData] = useState<Employee>({
     name: '',
     role: 'Guard',
@@ -30,6 +38,13 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Employe
     contact_phone: null,
     status: 'active',
     notes: null,
+    rdo_monday: false,
+    rdo_tuesday: false,
+    rdo_wednesday: false,
+    rdo_thursday: false,
+    rdo_friday: false,
+    rdo_saturday: false,
+    rdo_sunday: false,
   });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -111,9 +126,9 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Employe
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-6 rounded-t-lg">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-6 rounded-t-lg shrink-0 z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <User className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
@@ -130,13 +145,44 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Employe
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
+        {/* Body */}
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+          {/* Main Area */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            {/* Tabs */}
+            <div className="flex gap-4 sm:gap-6 border-b mb-6 overflow-x-auto pb-1 text-sm sm:text-base">
+              <button
+                type="button"
+                onClick={() => setActiveTab('main')}
+                className={`pb-2 whitespace-nowrap border-b-2 font-medium transition-colors ${activeTab === 'main' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+              >
+                Main Info
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('certs')}
+                className={`pb-2 whitespace-nowrap border-b-2 font-medium transition-colors ${activeTab === 'certs' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+              >
+                Certificates & Training
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('counseling')}
+                className={`pb-2 whitespace-nowrap border-b-2 font-medium transition-colors ${activeTab === 'counseling' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+              >
+                Performance Counseling
+              </button>
             </div>
-          )}
+
+            <form id="employee-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                  {error}
+                </div>
+              )}
+
+              {activeTab === 'main' && (
+                <div className="space-y-4 sm:space-y-6">
 
           {/* Name */}
           <div>
@@ -296,25 +342,70 @@ export default function EmployeeFormModal({ employee, onClose, onSave }: Employe
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              disabled={saving}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : employee ? 'Update Employee' : 'Add Employee'}
-            </button>
+                </div>
+              )}
+
+              {activeTab === 'certs' && (
+                <div className="py-8 text-center text-gray-500">
+                  <p>Certificates and Training management coming soon.</p>
+                  <p className="text-sm mt-2">Manage certifications from the Roster View drawer.</p>
+                </div>
+              )}
+
+              {activeTab === 'counseling' && (
+                <div className="py-8 text-center text-gray-500">
+                  <p>Performance Counseling history coming soon.</p>
+                  <p className="text-sm mt-2">Will include disciplinary actions and commendations.</p>
+                </div>
+              )}
+            </form>
           </div>
-        </form>
+
+          {/* Days Off Sidebar */}
+          <div className="w-full md:w-64 bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200 p-4 sm:p-6 shrink-0 overflow-y-auto">
+            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              Regular Days Off
+            </h3>
+            <p className="text-xs text-gray-500 mb-4">Select the days this employee is normally off duty.</p>
+            <div className="space-y-3">
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
+                <label key={day} className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={formData[`rdo_${day}` as keyof Employee] as boolean || false}
+                    onChange={(e) => setFormData({ ...formData, [`rdo_${day}`]: e.target.checked })}
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition-colors"
+                  />
+                  <span className="text-sm font-medium text-gray-700 capitalize group-hover:text-blue-600 transition-colors">
+                    {day}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions Footer */}
+        <div className="flex gap-3 p-4 sm:p-6 border-t bg-white shrink-0 justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+            disabled={saving}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="employee-form"
+            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center gap-2"
+            disabled={saving}
+          >
+            {saving && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>}
+            {saving ? 'Saving...' : employee ? 'Save Changes' : 'Add Employee'}
+          </button>
+        </div>
       </div>
     </div>
   );

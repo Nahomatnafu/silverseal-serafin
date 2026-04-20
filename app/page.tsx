@@ -1,17 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Map, List, Shield, UserPlus } from 'lucide-react';
+import { Map, List, Shield, UserPlus, Users, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import MapView from '@/components/MapView';
 import SitePanel from '@/components/SitePanel';
 import EmployeeDrawer from '@/components/EmployeeDrawer';
 import EmployeeFormModal from '@/components/EmployeeFormModal';
 import CertificationFormModal from '@/components/CertificationFormModal';
 import RosterView from '@/components/RosterView';
+import CalendarView from '@/components/CalendarView';
+import RdoView from '@/components/RdoView';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { supabase } from '@/lib/supabase';
 import { isShiftActive, isShiftUpcoming, getCertificationStatus } from '@/lib/utils';
 
-type ViewMode = 'map' | 'roster';
+type ViewMode = 'map' | 'roster' | 'calendar' | 'rdo';
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>('map');
@@ -246,85 +249,135 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-        <div className="px-3 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <Shield className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" />
-              <div className="min-w-0">
-                <h1 className="text-base sm:text-2xl font-bold truncate">Silverseal Guard</h1>
-                <p className="text-blue-100 text-xs sm:text-sm hidden sm:block">Secure Force Operations</p>
-              </div>
-            </div>
-
-            <div className="flex gap-1 sm:gap-2 flex-shrink-0">
-              <button
-                onClick={handleAddEmployee}
-                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm sm:text-base"
-              >
-                <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Add Employee</span>
-                <span className="sm:hidden">Add</span>
-              </button>
-              <button
-                onClick={() => setViewMode('map')}
-                className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
-                  viewMode === 'map'
-                    ? 'bg-white text-blue-600 font-semibold'
-                    : 'bg-blue-500 text-white hover:bg-blue-400'
-                }`}
-              >
-                <Map className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Map View</span>
-                <span className="sm:hidden">Map</span>
-              </button>
-              <button
-                onClick={() => setViewMode('roster')}
-                className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base ${
-                  viewMode === 'roster'
-                    ? 'bg-white text-blue-600 font-semibold'
-                    : 'bg-blue-500 text-white hover:bg-blue-400'
-                }`}
-              >
-                <List className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Roster View</span>
-                <span className="sm:hidden">Roster</span>
-              </button>
+    <div className="h-screen flex bg-gray-50 dark:bg-slate-950 transition-colors">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gradient-to-b from-blue-700 to-blue-900 dark:from-slate-800 dark:to-slate-900 text-white shadow-xl flex-col transition-colors z-20 hidden md:flex shrink-0">
+        <div className="p-6 flex items-center justify-between border-b border-blue-600 dark:border-slate-700">
+          <div className="flex items-center gap-3">
+            <Shield className="w-8 h-8 shrink-0 text-blue-200" />
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold truncate">Silverseal</h1>
+              <p className="text-blue-200 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold mt-1">Dashboard</p>
             </div>
           </div>
+          <ThemeToggle />
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="flex-1 relative overflow-hidden">
-        {viewMode === 'map' ? (
-          <>
-            <MapView
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <button
+            onClick={() => setViewMode('map')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              viewMode === 'map'
+                ? 'bg-white/10 text-white font-medium shadow-sm backdrop-blur-sm'
+                : 'text-blue-100 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <Map className="w-5 h-5 shrink-0" />
+            <span>Map View</span>
+          </button>
+
+          <button
+            onClick={() => setViewMode('roster')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              viewMode === 'roster'
+                ? 'bg-white/10 text-white font-medium shadow-sm backdrop-blur-sm'
+                : 'text-blue-100 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <Users className="w-5 h-5 shrink-0" />
+            <span>Employees</span>
+          </button>
+
+          <button
+            onClick={() => setViewMode('calendar')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              viewMode === 'calendar'
+                ? 'bg-white/10 text-white font-medium shadow-sm backdrop-blur-sm'
+                : 'text-blue-100 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <CalendarIcon className="w-5 h-5 shrink-0" />
+            <span>Calendar View</span>
+          </button>
+
+          <button
+            onClick={() => setViewMode('rdo')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              viewMode === 'rdo'
+                ? 'bg-white/10 text-white font-medium shadow-sm backdrop-blur-sm'
+                : 'text-blue-100 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <Clock className="w-5 h-5 shrink-0" />
+            <span>RDO View</span>
+          </button>
+        </nav>
+
+        <div className="p-4 border-t border-blue-600 dark:border-slate-700">
+          <button
+            onClick={handleAddEmployee}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-xl transition-colors font-medium shadow-sm"
+          >
+            <UserPlus className="w-5 h-5 shrink-0" />
+            <span>Add Employee</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Mobile Header */}
+        <header className="md:hidden bg-blue-700 text-white p-4 flex items-center justify-between shadow-md z-10 shrink-0">
+          <div className="flex items-center gap-2">
+            <Shield className="w-6 h-6" />
+            <h1 className="font-bold">Silverseal Dashboard</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setViewMode('map')} className={`p-2 rounded-lg ${viewMode === 'map' ? 'bg-white/20' : ''}`}><Map className="w-5 h-5" /></button>
+            <button onClick={() => setViewMode('roster')} className={`p-2 rounded-lg ${viewMode === 'roster' ? 'bg-white/20' : ''}`}><Users className="w-5 h-5" /></button>
+            <button onClick={() => setViewMode('calendar')} className={`p-2 rounded-lg ${viewMode === 'calendar' ? 'bg-white/20' : ''}`}><CalendarIcon className="w-5 h-5" /></button>
+            <button onClick={() => setViewMode('rdo')} className={`p-2 rounded-lg ${viewMode === 'rdo' ? 'bg-white/20' : ''}`}><Clock className="w-5 h-5" /></button>
+            <button onClick={handleAddEmployee} className="p-2 bg-green-500 rounded-lg ml-1"><UserPlus className="w-5 h-5" /></button>
+          </div>
+        </header>
+
+        {/* Content */}
+        <main className="flex-1 relative overflow-hidden bg-gray-50 dark:bg-slate-950">
+          {viewMode === 'map' ? (
+            <>
+              <MapView
+                sites={sites}
+                siteStats={siteStats}
+                clients={clients}
+                onSiteClick={setSelectedSiteId}
+              />
+              <SitePanel
+                site={selectedSite || null}
+                assignments={siteAssignments}
+                onClose={() => setSelectedSiteId(null)}
+                onEmployeeClick={setSelectedEmployeeId}
+              />
+            </>
+          ) : viewMode === 'roster' ? (
+            <RosterView
+              employees={employees}
+              assignments={assignments}
+              certifications={certifications}
               sites={sites}
-              siteStats={siteStats}
               clients={clients}
-              onSiteClick={setSelectedSiteId}
-            />
-            <SitePanel
-              site={selectedSite || null}
-              assignments={siteAssignments}
-              onClose={() => setSelectedSiteId(null)}
               onEmployeeClick={setSelectedEmployeeId}
             />
-          </>
-        ) : (
-          <RosterView
-            employees={employees}
-            assignments={assignments}
-            certifications={certifications}
-            sites={sites}
-            clients={clients}
-            onEmployeeClick={setSelectedEmployeeId}
-          />
-        )}
-      </main>
+          ) : viewMode === 'calendar' ? (
+            <CalendarView
+              assignments={assignments}
+              employees={employees}
+              sites={sites}
+            />
+          ) : (
+            <RdoView employees={employees} />
+          )}
+        </main>
+      </div>
 
       {/* Employee Drawer (overlays both views) */}
       <EmployeeDrawer

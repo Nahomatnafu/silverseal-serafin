@@ -104,24 +104,16 @@ export default function MapView({ sites, siteStats, clients, onSiteClick }: MapV
       const el = document.createElement('div');
       el.className = 'custom-marker';
       el.innerHTML = `
-        <div class="bg-white rounded-lg shadow-lg p-3 cursor-pointer hover:shadow-xl transition-shadow border-2 border-blue-500 min-w-[120px]">
-          <div class="font-semibold text-sm text-gray-900 mb-2 truncate">${site.name}</div>
-          <div class="flex gap-2 text-xs">
-            <div class="flex items-center gap-1">
-              <div class="w-2 h-2 rounded-full bg-green-500"></div>
-              <span class="text-gray-700">${stats.onShift}</span>
+        <div class="group relative cursor-pointer flex flex-col items-center z-10 transition-transform hover:scale-105 hover:z-50">
+          <div class="bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full shadow-lg border border-gray-200 dark:border-slate-700 flex items-center gap-2 transition-all">
+            <span class="font-semibold text-xs text-gray-800 dark:text-gray-100 max-w-[120px] truncate">${site.name}</span>
+            <div class="flex items-center gap-2 ml-1 border-l border-gray-200 dark:border-slate-600 pl-2">
+              <span class="flex items-center text-[11px] font-medium text-gray-600 dark:text-gray-300" title="On Shift"><div class="w-2 h-2 rounded-full bg-green-500 mr-1"></div>${stats.onShift}</span>
+              <span class="flex items-center text-[11px] font-medium text-gray-600 dark:text-gray-300" title="Upcoming"><div class="w-2 h-2 rounded-full bg-blue-500 mr-1"></div>${stats.upcoming}</span>
+              ${stats.certAlerts > 0 ? `<span class="flex items-center text-[11px] font-medium text-red-600 dark:text-red-400" title="Certification Alerts"><div class="w-2 h-2 rounded-full bg-red-500 mr-1 animate-pulse"></div>${stats.certAlerts}</span>` : ''}
             </div>
-            <div class="flex items-center gap-1">
-              <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-              <span class="text-gray-700">${stats.upcoming}</span>
-            </div>
-            ${stats.certAlerts > 0 ? `
-              <div class="flex items-center gap-1">
-                <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                <span class="text-gray-700">${stats.certAlerts}</span>
-              </div>
-            ` : ''}
           </div>
+          <div class="w-3 h-3 bg-white dark:bg-slate-800 border-b border-r border-gray-200 dark:border-slate-700 rotate-45 -mt-1.5 shadow-sm"></div>
         </div>
       `;
 

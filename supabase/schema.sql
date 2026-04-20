@@ -33,6 +33,13 @@ CREATE TABLE employees (
   contact_phone TEXT,
   status TEXT DEFAULT 'active', -- active, inactive, on_leave
   notes TEXT,
+  rdo_monday BOOLEAN DEFAULT false,
+  rdo_tuesday BOOLEAN DEFAULT false,
+  rdo_wednesday BOOLEAN DEFAULT false,
+  rdo_thursday BOOLEAN DEFAULT false,
+  rdo_friday BOOLEAN DEFAULT false,
+  rdo_saturday BOOLEAN DEFAULT false,
+  rdo_sunday BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
