@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Map, Shield, UserPlus, Users, Calendar as CalendarIcon, Clock, Building2, MapPin, AlertTriangle } from 'lucide-react';
+import { Map, UserPlus, Users, Calendar as CalendarIcon, Clock, Building2, MapPin, AlertTriangle } from 'lucide-react';
 import MapView from '@/components/MapView';
 import SitePanel from '@/components/SitePanel';
 import EmployeeDrawer from '@/components/EmployeeDrawer';
@@ -209,10 +209,10 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
+      <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <Shield className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-pulse" />
-          <p className="text-gray-600">Loading Silverseal Guard Management...</p>
+          <img src="/assets/Silverseal_Logo.png" alt="Silverseal" className="h-16 w-auto mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600 dark:text-gray-300">Loading Silverseal Guard Management…</p>
         </div>
       </div>
     );
@@ -223,12 +223,9 @@ export default function Home() {
       {/* Sidebar */}
       <aside className="w-64 bg-gradient-to-b from-blue-700 to-blue-900 dark:from-slate-800 dark:to-slate-900 text-white shadow-xl flex-col transition-colors z-20 hidden md:flex shrink-0">
         <div className="p-6 flex items-center justify-between border-b border-blue-600 dark:border-slate-700">
-          <div className="flex items-center gap-3">
-            <Shield className="w-8 h-8 shrink-0 text-blue-200" />
-            <div className="min-w-0">
-              <h1 className="text-xl font-bold truncate">Silverseal</h1>
-              <p className="text-blue-200 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold mt-1">Dashboard</p>
-            </div>
+          <div className="flex items-center gap-3 min-w-0">
+            <img src="/assets/Silverseal_Logo.png" alt="Silverseal" className="h-10 w-auto shrink-0" />
+            <p className="text-blue-200 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold truncate">Dashboard</p>
           </div>
           <ThemeToggle />
         </div>
@@ -329,8 +326,8 @@ export default function Home() {
         {/* Mobile Header */}
         <header className="md:hidden bg-blue-700 text-white p-4 flex items-center justify-between shadow-md z-10 shrink-0">
           <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6" />
-            <h1 className="font-bold">Silverseal Dashboard</h1>
+            <img src="/assets/Silverseal_Logo.png" alt="Silverseal" className="h-7 w-auto" />
+            <h1 className="font-bold tracking-tight">Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => setViewMode('map')} className={`p-2 rounded-lg ${viewMode === 'map' ? 'bg-white/20' : ''}`}><Map className="w-5 h-5" /></button>

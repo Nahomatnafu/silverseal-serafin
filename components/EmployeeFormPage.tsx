@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  ArrowLeft, User, Mail, Phone, Camera, FileText, Upload,
-  Calendar, Home, Briefcase, Flame, PlusCircle, Trash2, Award, Shield,
+  User, Mail, Phone, Camera, FileText, Upload,
+  Calendar, Home, Briefcase, Flame, PlusCircle, Trash2, Award,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -210,21 +210,14 @@ export default function EmployeeFormPage({ employee, existingCerts }: Props) {
       {/* ── Sticky Header ──────────────────────────────────────── */}
       <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center gap-4">
-          {/* Brand */}
-          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 shrink-0">
-            <Shield className="w-6 h-6" />
-            <span className="font-bold text-sm hidden sm:block">SilverSeal</span>
-          </div>
-
-          <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 shrink-0" />
-
-          {/* Back */}
+          {/* Logo — click to return to dashboard */}
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors shrink-0"
+            className="shrink-0 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500/40 rounded-lg"
+            aria-label="Back to dashboard"
+            title="Back to dashboard"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Dashboard</span>
+            <img src="/assets/Silverseal_Logo.png" alt="Silverseal" className="h-9 w-auto" />
           </button>
 
           {/* Title */}
