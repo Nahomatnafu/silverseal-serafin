@@ -1,15 +1,18 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Filter, ChevronDown, AlertCircle } from 'lucide-react';
-import { formatDateTime, isShiftActive, isShiftUpcoming, getCertificationStatus } from '@/lib/utils';
+import { Search, AlertCircle } from 'lucide-react';
+import { formatDateTime, isShiftActive, isShiftUpcoming, getCertificationStatus, fullName } from '@/lib/utils';
 
 interface Employee {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   role: string;
   profile_photo_url: string | null;
   status: string;
+  tour?: string | null;
+  current_position?: string | null;
 }
 
 interface Assignment {
@@ -63,9 +66,9 @@ export default function RosterView({
   }, [employees]);
 
   const filteredAndSortedEmployees = useMemo(() => {
-    let filtered = employees.filter(employee => {
+    const filtered = employees.filter(employee => {
       // Search filter
-      if (searchQuery && !employee.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+      if (searchQuery && !fullName(employee).toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
       }
 
@@ -112,7 +115,7 @@ export default function RosterView({
     // Sort
     filtered.sort((a, b) => {
       if (sortBy === 'name') {
-        return a.name.localeCompare(b.name);
+        return fullName(a).localeCompare(fullName(b));
       } else if (sortBy === 'shift_start') {
         const aAssignment = assignments.find(
           ass => ass.employee_id === a.id && (isShiftActive(ass.start_time, ass.end_time) || isShiftUpcoming(ass.start_time))
@@ -271,13 +274,16 @@ export default function RosterView({
                     <div className="flex items-center gap-3">
                       <img
                         src={employee.profile_photo_url || 'https://i.pravatar.cc/150?img=1'}
-                        alt={employee.name}
+                        alt={fullName(employee)}
                         className="w-10 h-10 rounded-full object-cover"
                       />
-                      <div className="font-medium text-gray-900">{employee.name}</div>
+                      <div>
+                        <div className="font-medium text-gray-900">{fullName(employee)}</div>
+                        {employee.tour && <div className="text-xs text-gray-500">{employee.tour}</div>}
+                      </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{employee.role}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{employee.current_position || employee.role}</td>
                   <td className="px-4 py-3">
                     {assignment ? (
                       <div>
@@ -361,12 +367,15 @@ export default function RosterView({
               <div className="flex items-start gap-3">
                 <img
                   src={employee.profile_photo_url || 'https://i.pravatar.cc/150?img=1'}
-                  alt={employee.name}
+                  alt={fullName(employee)}
                   className="w-12 h-12 rounded-full object-cover shrink-0"
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-gray-900 truncate">{employee.name}</div>
-                  <div className="text-sm text-gray-600">{employee.role}</div>
+                  <div className="font-semibold text-gray-900 truncate">{fullName(employee)}</div>
+                  <div className="text-sm text-gray-600">
+                    {employee.current_position || employee.role}
+                    {employee.tour && <span className="text-gray-400"> · {employee.tour}</span>}
+                  </div>
 
                   {assignment && (
                     <div className="mt-2 space-y-1">

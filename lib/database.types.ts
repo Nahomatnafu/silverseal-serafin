@@ -64,37 +64,103 @@ export interface Database {
       employees: {
         Row: {
           id: string
-          name: string
+          first_name: string
+          last_name: string
           role: string
           profile_photo_url: string | null
           contact_email: string | null
           contact_phone: string | null
           status: string
           notes: string | null
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          state: string | null
+          postal_code: string | null
+          country: string | null
+          tour: string | null
+          current_position: string | null
+          fireguard: boolean
+          training_start_date: string | null
+          official_start_date: string | null
+          date_inactive: string | null
+          date_reactivated: string | null
+          notice_file_url: string | null
+          rdo_monday: boolean
+          rdo_tuesday: boolean
+          rdo_wednesday: boolean
+          rdo_thursday: boolean
+          rdo_friday: boolean
+          rdo_saturday: boolean
+          rdo_sunday: boolean
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          name: string
+          first_name: string
+          last_name: string
           role: string
           profile_photo_url?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           status?: string
           notes?: string | null
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          state?: string | null
+          postal_code?: string | null
+          country?: string | null
+          tour?: string | null
+          current_position?: string | null
+          fireguard?: boolean
+          training_start_date?: string | null
+          official_start_date?: string | null
+          date_inactive?: string | null
+          date_reactivated?: string | null
+          notice_file_url?: string | null
+          rdo_monday?: boolean
+          rdo_tuesday?: boolean
+          rdo_wednesday?: boolean
+          rdo_thursday?: boolean
+          rdo_friday?: boolean
+          rdo_saturday?: boolean
+          rdo_sunday?: boolean
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          name?: string
+          first_name?: string
+          last_name?: string
           role?: string
           profile_photo_url?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           status?: string
           notes?: string | null
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          state?: string | null
+          postal_code?: string | null
+          country?: string | null
+          tour?: string | null
+          current_position?: string | null
+          fireguard?: boolean
+          training_start_date?: string | null
+          official_start_date?: string | null
+          date_inactive?: string | null
+          date_reactivated?: string | null
+          notice_file_url?: string | null
+          rdo_monday?: boolean
+          rdo_tuesday?: boolean
+          rdo_wednesday?: boolean
+          rdo_thursday?: boolean
+          rdo_friday?: boolean
+          rdo_saturday?: boolean
+          rdo_sunday?: boolean
           created_at?: string
           updated_at?: string
         }

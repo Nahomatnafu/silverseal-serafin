@@ -26,13 +26,33 @@ CREATE TABLE sites (
 -- Employees table
 CREATE TABLE employees (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
   role TEXT NOT NULL, -- guard, bodyguard, supervisor, etc.
   profile_photo_url TEXT,
   contact_email TEXT,
   contact_phone TEXT,
-  status TEXT DEFAULT 'active', -- active, inactive, on_leave
+  status TEXT DEFAULT 'active', -- active, inactive
   notes TEXT,
+  -- Address
+  address_line1 TEXT,
+  address_line2 TEXT,
+  city TEXT,
+  state TEXT,
+  postal_code TEXT,
+  country TEXT,
+  -- Assignment metadata
+  tour TEXT, -- 'Tour 1' | 'Tour 2' | 'Tour 3' | 'Museum'
+  current_position TEXT,
+  fireguard BOOLEAN DEFAULT false,
+  -- Key dates
+  training_start_date DATE,
+  official_start_date DATE,
+  date_inactive DATE,
+  date_reactivated DATE,
+  -- Administrative
+  notice_file_url TEXT,
+  -- Regular days off
   rdo_monday BOOLEAN DEFAULT false,
   rdo_tuesday BOOLEAN DEFAULT false,
   rdo_wednesday BOOLEAN DEFAULT false,
@@ -67,6 +87,20 @@ CREATE TABLE certifications (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Performance Counseling Records table
+CREATE TABLE counseling_records (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  employee_id UUID REFERENCES employees(id) ON DELETE CASCADE NOT NULL,
+  infraction_datetime TIMESTAMPTZ NOT NULL,
+  given_by TEXT NOT NULL,
+  counseling_type TEXT NOT NULL, -- 'Verbal Warning' | 'Written Warning' | 'Final Warning' | 'Suspension' | 'Termination Warning' | 'Commendation' | 'General Counseling'
+  details TEXT,
+  actions_taken TEXT,
+  file_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Documents table
 CREATE TABLE documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -82,6 +116,10 @@ CREATE TABLE documents (
     (employee_id IS NULL AND site_id IS NOT NULL)
   )
 );
+
+-- Indexes for counseling
+CREATE INDEX idx_counseling_employee ON counseling_records(employee_id);
+CREATE INDEX idx_counseling_datetime ON counseling_records(infraction_datetime DESC);
 
 -- Indexes for performance
 CREATE INDEX idx_assignments_employee ON assignments(employee_id);
@@ -119,5 +157,8 @@ CREATE TRIGGER update_certifications_updated_at BEFORE UPDATE ON certifications
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_counseling_updated_at BEFORE UPDATE ON counseling_records
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

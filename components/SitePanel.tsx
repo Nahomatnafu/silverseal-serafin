@@ -1,11 +1,12 @@
 'use client';
 
-import { X, MapPin, Building2, Clock, AlertCircle } from 'lucide-react';
-import { formatDateTime } from '@/lib/utils';
+import { X, MapPin, Building2, Clock } from 'lucide-react';
+import { formatDateTime, fullName } from '@/lib/utils';
 
 interface Employee {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   role: string;
   profile_photo_url: string | null;
 }
@@ -142,11 +143,11 @@ function AssignmentCard({
       <div className="flex items-center gap-3">
         <img
           src={assignment.employee?.profile_photo_url || 'https://i.pravatar.cc/150?img=1'}
-          alt={assignment.employee?.name}
+          alt={fullName(assignment.employee)}
           className="w-10 h-10 rounded-full object-cover"
         />
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm text-gray-900">{assignment.employee?.name}</div>
+          <div className="font-medium text-sm text-gray-900">{fullName(assignment.employee)}</div>
           <div className="text-xs text-gray-500">{assignment.employee?.role}</div>
         </div>
       </div>

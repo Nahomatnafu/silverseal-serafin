@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -10,13 +17,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -38,4 +38,84 @@ body {
   to {
     transform: translateX(0);
   }
+}
+
+/* ── FullCalendar base overrides ─────────────────────────────── */
+.fc-wrapper .fc {
+  font-family: inherit;
+}
+.fc-wrapper .fc-toolbar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.fc-wrapper .fc-button {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+.fc-wrapper .fc-button-primary {
+  background-color: #2563eb;
+  border-color: #1d4ed8;
+}
+.fc-wrapper .fc-button-primary:hover {
+  background-color: #1d4ed8;
+  border-color: #1e40af;
+}
+.fc-wrapper .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: #1e40af;
+  border-color: #1e3a8a;
+}
+.fc-wrapper .fc-event {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.fc-wrapper .fc-timegrid-slot {
+  height: 2.5rem;
+}
+
+/* ── FullCalendar dark mode ──────────────────────────────────── */
+.dark .fc-wrapper .fc-scrollgrid,
+.dark .fc-wrapper .fc-scrollgrid td,
+.dark .fc-wrapper .fc-scrollgrid th {
+  border-color: #334155;
+}
+.dark .fc-wrapper .fc-col-header-cell {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+.dark .fc-wrapper .fc-timegrid-slot-label {
+  color: #94a3b8;
+}
+.dark .fc-wrapper .fc-daygrid-day,
+.dark .fc-wrapper .fc-timegrid-col {
+  background: #0f172a;
+}
+.dark .fc-wrapper .fc-day-today {
+  background: #1e3a5f !important;
+}
+.dark .fc-wrapper .fc-toolbar-title {
+  color: #f1f5f9;
+}
+.dark .fc-wrapper .fc-button-primary {
+  background-color: #2563eb;
+  border-color: #1d4ed8;
+}
+.dark .fc-wrapper .fc-list-table,
+.dark .fc-wrapper .fc-list-day-cushion {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+.dark .fc-wrapper .fc-list-event:hover td {
+  background: #334155;
+}
+.dark .fc-wrapper .fc-daygrid-day-number,
+.dark .fc-wrapper .fc-daygrid-day-top a {
+  color: #cbd5e1;
+}
+.dark .fc-wrapper .fc-now-indicator-line {
+  border-color: #f87171;
+}
+.dark .fc-wrapper .fc-timegrid-now-indicator-arrow {
+  border-color: #f87171;
 }

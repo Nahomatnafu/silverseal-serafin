@@ -1,27 +1,31 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Map, List, Shield, UserPlus, Users, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Map, Shield, UserPlus, Users, Calendar as CalendarIcon, Clock, Building2, MapPin, AlertTriangle } from 'lucide-react';
 import MapView from '@/components/MapView';
 import SitePanel from '@/components/SitePanel';
 import EmployeeDrawer from '@/components/EmployeeDrawer';
-import EmployeeFormModal from '@/components/EmployeeFormModal';
+import ClientFormModal from '@/components/ClientFormModal';
+import SiteFormModal from '@/components/SiteFormModal';
 import CertificationFormModal from '@/components/CertificationFormModal';
 import RosterView from '@/components/RosterView';
 import CalendarView from '@/components/CalendarView';
 import RdoView from '@/components/RdoView';
+import CounselingView from '@/components/CounselingView';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { supabase } from '@/lib/supabase';
 import { isShiftActive, isShiftUpcoming, getCertificationStatus } from '@/lib/utils';
 
-type ViewMode = 'map' | 'roster' | 'calendar' | 'rdo';
+type ViewMode = 'map' | 'roster' | 'calendar' | 'rdo' | 'counseling';
 
 export default function Home() {
+  const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>('map');
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
-  const [employeeFormOpen, setEmployeeFormOpen] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState<any | null>(null);
+  const [clientFormOpen, setClientFormOpen] = useState(false);
+  const [siteFormOpen, setSiteFormOpen] = useState(false);
   const [certificationFormOpen, setCertificationFormOpen] = useState(false);
   const [editingCertification, setEditingCertification] = useState<any | null>(null);
   const [certificationEmployeeId, setCertificationEmployeeId] = useState<string>('');
@@ -69,50 +73,6 @@ export default function Home() {
     }
   }
 
-  async function handleSaveEmployee(employee: any) {
-    try {
-      if (employee.id) {
-        // Update existing employee
-        const { error } = await (supabase as any)
-          .from('employees')
-          .update({
-            name: employee.name,
-            role: employee.role,
-            profile_photo_url: employee.profile_photo_url,
-            contact_email: employee.contact_email,
-            contact_phone: employee.contact_phone,
-            status: employee.status,
-            notes: employee.notes,
-          })
-          .eq('id', employee.id);
-
-        if (error) throw error;
-      } else {
-        // Insert new employee
-        const { error } = await (supabase as any)
-          .from('employees')
-          .insert({
-            name: employee.name,
-            role: employee.role,
-            profile_photo_url: employee.profile_photo_url,
-            contact_email: employee.contact_email,
-            contact_phone: employee.contact_phone,
-            status: employee.status,
-            notes: employee.notes,
-          });
-
-        if (error) throw error;
-      }
-
-      // Reload data
-      await loadData();
-      setEmployeeFormOpen(false);
-      setEditingEmployee(null);
-    } catch (error: any) {
-      console.error('Error saving employee:', error);
-      throw new Error(error.message || 'Failed to save employee');
-    }
-  }
 
   async function handleDeleteEmployee(employeeId: string) {
     try {
@@ -133,13 +93,23 @@ export default function Home() {
   }
 
   function handleEditEmployee(employee: any) {
-    setEditingEmployee(employee);
-    setEmployeeFormOpen(true);
+    router.push(`/employees/${employee.id}/edit`);
   }
 
   function handleAddEmployee() {
-    setEditingEmployee(null);
-    setEmployeeFormOpen(true);
+    router.push('/employees/new');
+  }
+
+  async function handleSaveClient(client: { name: string }) {
+    const { error } = await (supabase as any).from('clients').insert({ name: client.name });
+    if (error) throw new Error(error.message);
+    await loadData();
+  }
+
+  async function handleSaveSite(site: { name: string; address: string; latitude: number; longitude: number; client_id: string }) {
+    const { error } = await (supabase as any).from('sites').insert(site);
+    if (error) throw new Error(error.message);
+    await loadData();
   }
 
   async function handleSaveCertification(certification: any) {
@@ -311,9 +281,39 @@ export default function Home() {
             <Clock className="w-5 h-5 shrink-0" />
             <span>RDO View</span>
           </button>
+
+          <button
+            onClick={() => setViewMode('counseling')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              viewMode === 'counseling'
+                ? 'bg-white/10 text-white font-medium shadow-sm backdrop-blur-sm'
+                : 'text-blue-100 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <AlertTriangle className="w-5 h-5 shrink-0" />
+            <span>Counseling</span>
+          </button>
         </nav>
 
-        <div className="p-4 border-t border-blue-600 dark:border-slate-700">
+        <div className="p-4 border-t border-blue-600 dark:border-slate-700 space-y-2">
+          {/* Secondary: Add Client + Add Site */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setClientFormOpen(true)}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-xs font-medium"
+            >
+              <Building2 className="w-3.5 h-3.5 shrink-0" />
+              <span>Add Client</span>
+            </button>
+            <button
+              onClick={() => setSiteFormOpen(true)}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-xs font-medium"
+            >
+              <MapPin className="w-3.5 h-3.5 shrink-0" />
+              <span>Add Site</span>
+            </button>
+          </div>
+          {/* Primary: Add Employee */}
           <button
             onClick={handleAddEmployee}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-xl transition-colors font-medium shadow-sm"
@@ -337,6 +337,7 @@ export default function Home() {
             <button onClick={() => setViewMode('roster')} className={`p-2 rounded-lg ${viewMode === 'roster' ? 'bg-white/20' : ''}`}><Users className="w-5 h-5" /></button>
             <button onClick={() => setViewMode('calendar')} className={`p-2 rounded-lg ${viewMode === 'calendar' ? 'bg-white/20' : ''}`}><CalendarIcon className="w-5 h-5" /></button>
             <button onClick={() => setViewMode('rdo')} className={`p-2 rounded-lg ${viewMode === 'rdo' ? 'bg-white/20' : ''}`}><Clock className="w-5 h-5" /></button>
+            <button onClick={() => setViewMode('counseling')} className={`p-2 rounded-lg ${viewMode === 'counseling' ? 'bg-white/20' : ''}`}><AlertTriangle className="w-5 h-5" /></button>
             <button onClick={handleAddEmployee} className="p-2 bg-green-500 rounded-lg ml-1"><UserPlus className="w-5 h-5" /></button>
           </div>
         </header>
@@ -349,6 +350,8 @@ export default function Home() {
                 sites={sites}
                 siteStats={siteStats}
                 clients={clients}
+                employees={employees}
+                assignments={assignments}
                 onSiteClick={setSelectedSiteId}
               />
               <SitePanel
@@ -372,9 +375,12 @@ export default function Home() {
               assignments={assignments}
               employees={employees}
               sites={sites}
+              onEmployeeClick={setSelectedEmployeeId}
             />
+          ) : viewMode === 'counseling' ? (
+            <CounselingView employees={employees} />
           ) : (
-            <RdoView employees={employees} />
+            <RdoView employees={employees} onEmployeeClick={setSelectedEmployeeId} />
           )}
         </main>
       </div>
@@ -387,21 +393,28 @@ export default function Home() {
         currentAssignment={currentAssignment || null}
         onClose={() => setSelectedEmployeeId(null)}
         onEdit={handleEditEmployee}
-        onDelete={handleDeleteEmployee}
+        onDelete={viewMode === 'roster' ? handleDeleteEmployee : undefined}
         onAddCertification={handleAddCertification}
         onEditCertification={handleEditCertification}
         onDeleteCertification={handleDeleteCertification}
       />
 
-      {/* Employee Form Modal */}
-      {employeeFormOpen && (
-        <EmployeeFormModal
-          employee={editingEmployee}
-          onClose={() => {
-            setEmployeeFormOpen(false);
-            setEditingEmployee(null);
-          }}
-          onSave={handleSaveEmployee}
+
+
+      {/* Client Form Modal */}
+      {clientFormOpen && (
+        <ClientFormModal
+          onClose={() => setClientFormOpen(false)}
+          onSave={handleSaveClient}
+        />
+      )}
+
+      {/* Site Form Modal */}
+      {siteFormOpen && (
+        <SiteFormModal
+          clients={clients}
+          onClose={() => setSiteFormOpen(false)}
+          onSave={handleSaveSite}
         />
       )}
 

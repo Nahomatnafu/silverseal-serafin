@@ -1,7 +1,7 @@
 'use client';
 
-import { X, Mail, Phone, MapPin, Clock, FileText, AlertCircle, Edit, Trash2, Plus } from 'lucide-react';
-import { formatDate, formatDateTime, getCertificationStatusColor, getCertificationStatus } from '@/lib/utils';
+import { X, Mail, Phone, MapPin, Clock, FileText, AlertCircle, Edit, Trash2, Plus, Home, Briefcase, Flame, Calendar } from 'lucide-react';
+import { formatDate, formatDateTime, getCertificationStatusColor, getCertificationStatus, fullName } from '@/lib/utils';
 
 interface Certification {
   id: string;
@@ -30,13 +30,28 @@ interface Assignment {
 
 interface Employee {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   role: string;
   profile_photo_url: string | null;
   contact_email: string | null;
   contact_phone: string | null;
   status: string;
   notes: string | null;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postal_code?: string | null;
+  country?: string | null;
+  tour?: string | null;
+  current_position?: string | null;
+  fireguard?: boolean | null;
+  training_start_date?: string | null;
+  official_start_date?: string | null;
+  date_inactive?: string | null;
+  date_reactivated?: string | null;
+  notice_file_url?: string | null;
 }
 
 interface EmployeeDrawerProps {
@@ -69,8 +84,10 @@ export default function EmployeeDrawer({
   const expiredCerts = certifications.filter(c => getCertificationStatus(c.expiry_date) === 'expired').length;
   const expiringSoonCerts = certifications.filter(c => getCertificationStatus(c.expiry_date) === 'expiring_soon').length;
 
+  const displayName = fullName(employee);
+
   const handleDelete = () => {
-    if (window.confirm(`Are you sure you want to delete ${employee.name}? This action cannot be undone.`)) {
+    if (window.confirm(`Are you sure you want to delete ${displayName}? This action cannot be undone.`)) {
       onDelete?.(employee.id);
     }
   };
@@ -82,19 +99,22 @@ export default function EmployeeDrawer({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[500px] bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-50 animate-slide-in">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[500px] bg-white dark:bg-slate-900 shadow-2xl border-l border-gray-200 dark:border-slate-800 overflow-y-auto z-50 animate-slide-in">
       {/* Header */}
-      <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sm:p-6 z-10">
+      <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-slate-800 dark:to-slate-900 text-white p-4 sm:p-6 z-10">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <img
               src={employee.profile_photo_url || 'https://i.pravatar.cc/150?img=1'}
-              alt={employee.name}
+              alt={displayName}
               className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-white shadow-lg shrink-0"
             />
             <div className="min-w-0">
-              <h2 className="text-xl sm:text-2xl font-bold truncate">{employee.name}</h2>
-              <p className="text-blue-100 mt-1 text-sm sm:text-base truncate">{employee.role}</p>
+              <h2 className="text-xl sm:text-2xl font-bold truncate">{displayName}</h2>
+              <p className="text-blue-100 mt-1 text-sm sm:text-base truncate">
+                {employee.current_position || employee.role}
+                {employee.tour && <span className="text-blue-200"> · {employee.tour}</span>}
+              </p>
               <div className="mt-2">
                 <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                   employee.status === 'active' ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
@@ -143,10 +163,10 @@ export default function EmployeeDrawer({
 
         {/* Contact Information */}
         <section>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Contact Information</h3>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Contact Information</h3>
           <div className="space-y-2">
             {employee.contact_email && (
-              <div className="flex items-center gap-3 text-sm text-gray-700">
+              <div className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
                 <Mail className="w-4 h-4 text-gray-400" />
                 <a href={`mailto:${employee.contact_email}`} className="hover:text-blue-600">
                   {employee.contact_email}
@@ -154,15 +174,92 @@ export default function EmployeeDrawer({
               </div>
             )}
             {employee.contact_phone && (
-              <div className="flex items-center gap-3 text-sm text-gray-700">
+              <div className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
                 <Phone className="w-4 h-4 text-gray-400" />
                 <a href={`tel:${employee.contact_phone}`} className="hover:text-blue-600">
                   {employee.contact_phone}
                 </a>
               </div>
             )}
+            {(employee.address_line1 || employee.city) && (
+              <div className="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                <Home className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                <div>
+                  {employee.address_line1 && <div>{employee.address_line1}</div>}
+                  {employee.address_line2 && <div>{employee.address_line2}</div>}
+                  <div>
+                    {[employee.city, employee.state, employee.postal_code].filter(Boolean).join(', ')}
+                  </div>
+                  {employee.country && <div>{employee.country}</div>}
+                </div>
+              </div>
+            )}
           </div>
         </section>
+
+        {/* Role & Tour */}
+        {(employee.current_position || employee.tour || employee.fireguard) && (
+          <section>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Role & Tour</h3>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {employee.current_position && (
+                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Briefcase className="w-4 h-4 text-gray-400" />
+                  <span>{employee.current_position}</span>
+                </div>
+              )}
+              {employee.tour && (
+                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <span>{employee.tour}</span>
+                </div>
+              )}
+              {employee.fireguard && (
+                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                  <Flame className="w-4 h-4" />
+                  <span>Fireguard</span>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Key Dates */}
+        {(employee.training_start_date || employee.official_start_date || employee.date_inactive || employee.date_reactivated) && (
+          <section>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Key Dates</h3>
+            <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+              {employee.training_start_date && (
+                <div className="flex items-center gap-2"><Calendar className="w-3 h-3 text-gray-400" /><span className="text-gray-500 dark:text-gray-400 w-32">Training start:</span><span>{formatDate(employee.training_start_date)}</span></div>
+              )}
+              {employee.official_start_date && (
+                <div className="flex items-center gap-2"><Calendar className="w-3 h-3 text-gray-400" /><span className="text-gray-500 dark:text-gray-400 w-32">Official start:</span><span>{formatDate(employee.official_start_date)}</span></div>
+              )}
+              {employee.date_inactive && (
+                <div className="flex items-center gap-2"><Calendar className="w-3 h-3 text-gray-400" /><span className="text-gray-500 dark:text-gray-400 w-32">Date inactive:</span><span>{formatDate(employee.date_inactive)}</span></div>
+              )}
+              {employee.date_reactivated && (
+                <div className="flex items-center gap-2"><Calendar className="w-3 h-3 text-gray-400" /><span className="text-gray-500 dark:text-gray-400 w-32">Re-activated:</span><span>{formatDate(employee.date_reactivated)}</span></div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Notice File */}
+        {employee.notice_file_url && (
+          <section>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Notice</h3>
+            <a
+              href={employee.notice_file_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 border border-gray-200 dark:border-slate-700 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all"
+            >
+              <FileText className="w-4 h-4 text-gray-400" />
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">View notice document</span>
+            </a>
+          </section>
+        )}
 
         {/* Current Assignment */}
         <section>

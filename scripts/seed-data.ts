@@ -38,29 +38,29 @@ const clients = [
 ];
 
 const sites = [
-  { name: 'TechCorp HQ', address: '100 Innovation Drive, San Francisco, CA', lat: 37.7749, lng: -122.4194, clientIndex: 0 },
-  { name: 'TechCorp Data Center', address: '250 Server Lane, Palo Alto, CA', lat: 37.4419, lng: -122.1430, clientIndex: 0 },
-  { name: 'TechCorp R&D Lab', address: '500 Research Blvd, Mountain View, CA', lat: 37.3861, lng: -122.0839, clientIndex: 0 },
-  { name: 'Metro Bank Downtown', address: '1 Financial Plaza, San Francisco, CA', lat: 37.7897, lng: -122.3972, clientIndex: 1 },
-  { name: 'Metro Bank North Branch', address: '450 Market Street, San Francisco, CA', lat: 37.7911, lng: -122.3998, clientIndex: 1 },
-  { name: 'Metro Bank Vault Facility', address: '800 Secure Way, Oakland, CA', lat: 37.8044, lng: -122.2712, clientIndex: 1 },
-  { name: 'Luxury Estates - Pacific Heights', address: '2500 Broadway, San Francisco, CA', lat: 37.7956, lng: -122.4383, clientIndex: 2 },
-  { name: 'Luxury Estates - Presidio', address: '100 Presidio Terrace, San Francisco, CA', lat: 37.7858, lng: -122.4581, clientIndex: 2 },
-  { name: 'Luxury Estates - Sea Cliff', address: '850 El Camino Del Mar, San Francisco, CA', lat: 37.7847, lng: -122.4931, clientIndex: 2 },
-  { name: 'Luxury Estates - Nob Hill', address: '1200 California Street, San Francisco, CA', lat: 37.7919, lng: -122.4153, clientIndex: 2 },
+  { name: 'Empire State Building', address: '350 5th Ave, New York, NY 10118', lat: 40.7484, lng: -73.9857, clientIndex: 0 },
+  { name: 'One World Trade Center', address: '285 Fulton St, New York, NY 10007', lat: 40.7127, lng: -74.0134, clientIndex: 0 },
+  { name: 'Hudson Yards Tower', address: '30 Hudson Yards, New York, NY 10001', lat: 40.7539, lng: -74.0014, clientIndex: 0 },
+  { name: 'Metro Bank - Wall Street', address: '40 Wall St, New York, NY 10005', lat: 40.7068, lng: -74.0085, clientIndex: 1 },
+  { name: 'Metro Bank - Midtown', address: '745 7th Ave, New York, NY 10019', lat: 40.7616, lng: -73.9821, clientIndex: 1 },
+  { name: 'Metro Bank Vault Facility', address: '70 Pine St, New York, NY 10005', lat: 40.7065, lng: -74.0075, clientIndex: 1 },
+  { name: 'Luxury Estates - Upper East Side', address: '740 Park Ave, New York, NY 10021', lat: 40.7700, lng: -73.9636, clientIndex: 2 },
+  { name: 'Luxury Estates - Tribeca', address: '443 Greenwich St, New York, NY 10013', lat: 40.7222, lng: -74.0091, clientIndex: 2 },
+  { name: 'Luxury Estates - Central Park West', address: '15 Central Park W, New York, NY 10023', lat: 40.7697, lng: -73.9818, clientIndex: 2 },
+  { name: 'Luxury Estates - SoHo Penthouse', address: '60 Crosby St, New York, NY 10012', lat: 40.7227, lng: -73.9986, clientIndex: 2 },
 ];
 
 const employees = [
-  { name: 'Dwayne Johnson', role: 'Senior Guard', photo: 'https://randomuser.me/api/portraits/men/1.jpg', email: 'dwayne.johnson@silverseal.com', phone: '(415) 555-0101' },
-  { name: 'Scarlett Johansson', role: 'Bodyguard', photo: 'https://randomuser.me/api/portraits/women/1.jpg', email: 'scarlett.johansson@silverseal.com', phone: '(415) 555-0102' },
-  { name: 'Idris Elba', role: 'Guard', photo: 'https://randomuser.me/api/portraits/men/2.jpg', email: 'idris.elba@silverseal.com', phone: '(415) 555-0103' },
-  { name: 'Gal Gadot', role: 'Supervisor', photo: 'https://randomuser.me/api/portraits/women/2.jpg', email: 'gal.gadot@silverseal.com', phone: '(415) 555-0104' },
-  { name: 'Chris Hemsworth', role: 'Guard', photo: 'https://randomuser.me/api/portraits/men/3.jpg', email: 'chris.hemsworth@silverseal.com', phone: '(415) 555-0105' },
-  { name: 'Charlize Theron', role: 'Bodyguard', photo: 'https://randomuser.me/api/portraits/women/3.jpg', email: 'charlize.theron@silverseal.com', phone: '(415) 555-0106' },
-  { name: 'Jason Statham', role: 'Senior Guard', photo: 'https://randomuser.me/api/portraits/men/4.jpg', email: 'jason.statham@silverseal.com', phone: '(415) 555-0107' },
-  { name: 'Zoe Saldana', role: 'Guard', photo: 'https://randomuser.me/api/portraits/women/4.jpg', email: 'zoe.saldana@silverseal.com', phone: '(415) 555-0108' },
-  { name: 'Tom Cruise', role: 'Guard', photo: 'https://randomuser.me/api/portraits/men/5.jpg', email: 'tom.cruise@silverseal.com', phone: '(415) 555-0109' },
-  { name: 'Michelle Rodriguez', role: 'Bodyguard', photo: 'https://randomuser.me/api/portraits/women/5.jpg', email: 'michelle.rodriguez@silverseal.com', phone: '(415) 555-0110' },
+  { first_name: 'Dwayne',    last_name: 'Johnson',    role: 'Senior Guard', photo: 'https://randomuser.me/api/portraits/men/1.jpg',   email: 'dwayne.johnson@silverseal.com',     phone: '(212) 555-0101' },
+  { first_name: 'Scarlett',  last_name: 'Johansson',  role: 'Bodyguard',    photo: 'https://randomuser.me/api/portraits/women/1.jpg', email: 'scarlett.johansson@silverseal.com', phone: '(212) 555-0102' },
+  { first_name: 'Idris',     last_name: 'Elba',       role: 'Guard',        photo: 'https://randomuser.me/api/portraits/men/2.jpg',   email: 'idris.elba@silverseal.com',         phone: '(212) 555-0103' },
+  { first_name: 'Gal',       last_name: 'Gadot',      role: 'Supervisor',   photo: 'https://randomuser.me/api/portraits/women/2.jpg', email: 'gal.gadot@silverseal.com',          phone: '(212) 555-0104' },
+  { first_name: 'Chris',     last_name: 'Hemsworth',  role: 'Guard',        photo: 'https://randomuser.me/api/portraits/men/3.jpg',   email: 'chris.hemsworth@silverseal.com',    phone: '(212) 555-0105' },
+  { first_name: 'Charlize',  last_name: 'Theron',     role: 'Bodyguard',    photo: 'https://randomuser.me/api/portraits/women/3.jpg', email: 'charlize.theron@silverseal.com',    phone: '(212) 555-0106' },
+  { first_name: 'Jason',     last_name: 'Statham',    role: 'Senior Guard', photo: 'https://randomuser.me/api/portraits/men/4.jpg',   email: 'jason.statham@silverseal.com',      phone: '(212) 555-0107' },
+  { first_name: 'Zoe',       last_name: 'Saldana',    role: 'Guard',        photo: 'https://randomuser.me/api/portraits/women/4.jpg', email: 'zoe.saldana@silverseal.com',        phone: '(212) 555-0108' },
+  { first_name: 'Tom',       last_name: 'Cruise',     role: 'Guard',        photo: 'https://randomuser.me/api/portraits/men/5.jpg',   email: 'tom.cruise@silverseal.com',         phone: '(212) 555-0109' },
+  { first_name: 'Michelle',  last_name: 'Rodriguez',  role: 'Bodyguard',    photo: 'https://randomuser.me/api/portraits/women/5.jpg', email: 'michelle.rodriguez@silverseal.com', phone: '(212) 555-0110' },
 ];
 
 const certTypes = [
@@ -116,13 +116,18 @@ async function seed() {
 
   // Insert employees
   console.log('👤 Inserting employees...');
-  const employeesData = employees.map(emp => ({
-    name: emp.name,
+  const tours = ['Tour 1', 'Tour 2', 'Tour 3', 'Museum'];
+  const employeesData = employees.map((emp, i) => ({
+    first_name: emp.first_name,
+    last_name: emp.last_name,
     role: emp.role,
     profile_photo_url: emp.photo,
     contact_email: emp.email,
     contact_phone: emp.phone,
     status: 'active',
+    tour: tours[i % tours.length],
+    current_position: emp.role,
+    fireguard: i % 3 === 0,
   }));
 
   const { data: employeeData, error: employeeError } = await (supabase as any)
@@ -232,7 +237,7 @@ async function seed() {
   // Add 1-2 documents per employee
   for (const employee of employeeData.slice(0, 5)) {
     documents.push({
-      name: `${employee.name.split(' ')[1]}_Contract_2024.pdf`,
+      name: `${employee.last_name}_Contract_2024.pdf`,
       file_url: `https://example.com/docs/contracts/${employee.id}.pdf`,
       document_type: 'contract',
       employee_id: employee.id,
@@ -241,7 +246,7 @@ async function seed() {
 
     if (Math.random() > 0.5) {
       documents.push({
-        name: `${employee.name.split(' ')[1]}_License.pdf`,
+        name: `${employee.last_name}_License.pdf`,
         file_url: `https://example.com/docs/licenses/${employee.id}.pdf`,
         document_type: 'license',
         employee_id: employee.id,

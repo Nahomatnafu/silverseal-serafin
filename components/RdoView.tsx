@@ -1,12 +1,14 @@
 import React from 'react';
+import { fullName } from '@/lib/utils';
 
 interface RdoViewProps {
   employees: any[];
+  onEmployeeClick?: (employeeId: string) => void;
 }
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
-export default function RdoView({ employees }: RdoViewProps) {
+export default function RdoView({ employees, onEmployeeClick }: RdoViewProps) {
   const totals = DAYS.reduce((acc, day) => {
     acc[day] = { off: 0, on: 0 };
     return acc;
@@ -42,9 +44,13 @@ export default function RdoView({ employees }: RdoViewProps) {
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
             {employees.map(emp => (
-              <tr key={emp.id} className="bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+              <tr
+                key={emp.id}
+                onClick={() => onEmployeeClick?.(emp.id)}
+                className={`bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors ${onEmployeeClick ? 'cursor-pointer' : ''}`}
+              >
                 <td className="px-4 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                  {emp.first_name} {emp.last_name}
+                  {fullName(emp)}
                 </td>
                 <td className="px-4 py-3 capitalize">{emp.role}</td>
                 {DAYS.map(day => (
@@ -60,7 +66,9 @@ export default function RdoView({ employees }: RdoViewProps) {
             ))}
             {employees.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">No employees found.</td>
+                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                  No employees yet. Use the “Add Employee” button to add your first one.
+                </td>
               </tr>
             )}
           </tbody>

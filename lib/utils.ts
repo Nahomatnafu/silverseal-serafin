@@ -51,6 +51,11 @@ export function getCertificationStatus(expiryDate: string): 'valid' | 'expiring_
   }
 }
 
+export function fullName(employee: { first_name?: string | null; last_name?: string | null } | null | undefined): string {
+  if (!employee) return '';
+  return `${employee.first_name ?? ''} ${employee.last_name ?? ''}`.trim();
+}
+
 export function getCertificationStatusColor(status: string): string {
   switch (status) {
     case 'valid':
