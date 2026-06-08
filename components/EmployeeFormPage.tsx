@@ -34,6 +34,8 @@ const BLANK: FormData = {
   rdo_friday: false, rdo_saturday: false, rdo_sunday: false,
 };
 
+const DEFAULT_ROLES = ['Guard', 'Senior Guard', 'Bodyguard', 'Supervisor', 'Manager'];
+
 const DEFAULT_CERTS: CertEntry[] = [
   { name: 'CPR Training',              date_obtained: '', expiration_date: '' },
   { name: 'Customer Service Training', date_obtained: '', expiration_date: '' },
@@ -63,12 +65,22 @@ export default function EmployeeFormPage({ employee, existingCerts }: Props) {
   const [uploadingNotice, setUploadingNotice] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /* Role management */
+  const [roles, setRoles] = useState<string[]>(DEFAULT_ROLES);
+  const [showAddRole, setShowAddRole] = useState(false);
+  const [customRoleInput, setCustomRoleInput] = useState('');
+
   /* Pre-fill when editing */
   useEffect(() => {
     if (employee) {
+      // If the stored role isn't in the default list, add it so the dropdown shows it correctly
+      const storedRole = employee.role ?? 'Guard';
+      if (storedRole && !DEFAULT_ROLES.includes(storedRole)) {
+        setRoles(prev => prev.includes(storedRole) ? prev : [...prev, storedRole]);
+      }
       setForm({
         first_name: employee.first_name ?? '', last_name: employee.last_name ?? '',
-        role: employee.role ?? 'Guard', status: employee.status ?? 'active',
+        role: storedRole, status: employee.status ?? 'active',
         contact_email: employee.contact_email ?? '', contact_phone: employee.contact_phone ?? '',
         profile_photo_url: employee.profile_photo_url ?? '',
         address_line1: employee.address_line1 ?? '', address_line2: employee.address_line2 ?? '',
@@ -98,6 +110,15 @@ export default function EmployeeFormPage({ employee, existingCerts }: Props) {
 
   /* Helpers */
   const set = (key: keyof FormData, val: any) => setForm(prev => ({ ...prev, [key]: val }));
+
+  const addCustomRole = () => {
+    const r = customRoleInput.trim();
+    if (!r) return;
+    if (!roles.includes(r)) setRoles(prev => [...prev, r]);
+    set('role', r);
+    setCustomRoleInput('');
+    setShowAddRole(false);
+  };
 
   const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
@@ -199,7 +220,6 @@ export default function EmployeeFormPage({ employee, existingCerts }: Props) {
   const lbl  = 'block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5';
   const card = 'bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6';
 
-  const ROLES    = ['Guard', 'Senior Guard', 'Bodyguard', 'Supervisor', 'Manager'];
   const TOURS    = ['Tour 1', 'Tour 2', 'Tour 3', 'Museum'];
   const DAYS     = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] as const;
 
@@ -315,10 +335,41 @@ export default function EmployeeFormPage({ employee, existingCerts }: Props) {
                   <input type="text" required value={form.last_name} onChange={e => set('last_name', e.target.value)} className={inp} placeholder="Doe" />
                 </div>
                 <div>
-                  <label className={lbl}>Role *</label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className={lbl.replace('mb-1.5', '')}>Role *</label>
+                    <button
+                      type="button"
+                      onClick={() => { setShowAddRole(v => !v); setCustomRoleInput(''); }}
+                      className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                    >
+                      <PlusCircle className="w-3 h-3" />
+                      {showAddRole ? 'Cancel' : 'Add role'}
+                    </button>
+                  </div>
                   <select value={form.role} onChange={e => set('role', e.target.value)} className={inp}>
-                    {ROLES.map(r => <option key={r}>{r}</option>)}
+                    {roles.map(r => <option key={r}>{r}</option>)}
                   </select>
+                  {showAddRole && (
+                    <div className="flex gap-2 mt-2">
+                      <input
+                        type="text"
+                        value={customRoleInput}
+                        onChange={e => setCustomRoleInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomRole(); } if (e.key === 'Escape') { setShowAddRole(false); setCustomRoleInput(''); } }}
+                        autoFocus
+                        placeholder="e.g. Director, K9 Handler…"
+                        className={`${inp} flex-1`}
+                      />
+                      <button
+                        type="button"
+                        onClick={addCustomRole}
+                        disabled={!customRoleInput.trim()}
+                        className="px-3 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors disabled:opacity-40 shrink-0"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className={lbl}>Status *</label>

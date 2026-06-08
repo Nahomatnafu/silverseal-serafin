@@ -118,8 +118,8 @@ export default function CounselingView({ employees }: Props) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-500" /> Performance Counseling
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            Performance Counseling
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             {records.length} record{records.length !== 1 ? 's' : ''} across all employees
